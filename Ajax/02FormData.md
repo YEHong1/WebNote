@@ -49,9 +49,9 @@ let btn = document.querySelector("#btn");
 //为按钮添加点击事件
 btn.onclick = function(){
     //根据ID获得页面当中的form表单元素
-    var form = document.querySelector("#advForm");
+    let form = document.querySelector("#advForm");
     //将获得的表单元素作为参数，对formData进行初始化
-    var formdata = new FormData(form);
+    let formdata = new FormData(form);
     //通过get方法获得name为advName元素的value值
     console.log(formdata.get("advName"));//xixi
     //通过get方法获得name为advType元素的value值
