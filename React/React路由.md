@@ -14,7 +14,8 @@ npm i react-router-dom --save
 import React from "react";
 import {render} from "react-dom";
 import App from "./views/App/App";
-//使用 BrowserRouter 标签来包裹 App 组件
+//使用 BrowserRouter(history模式) 或 HashRouter(hash模式) 标签来包裹 App 组件
+// 更推荐使用HashRouter， 使用BrowserRouter的话需要避开后端的路由
 import {BrowserRouter} from "react-router-dom";
 import './index.css'
 

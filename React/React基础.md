@@ -97,6 +97,27 @@ npm run eject
 
 1.只有一个根标签
 
+```jsx
+// 如果不希望根标签被渲染，可以使用Fragment来作为根标签
+import React, {Component, Fragment} from 'react';
+
+export default class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    render() {
+        return (
+            <Fragment>
+                <p>Hello World</p>
+                <p>App Component</p>
+            </Fragment>
+        )
+    }
+}
+```
+
 2.单标签必须闭合，如 <input type='text' />	<img src=''/>
 
 3.img 标签必须包含 alt 属性
