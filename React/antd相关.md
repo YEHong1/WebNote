@@ -5,7 +5,7 @@ yarn add react-app-rewired customize-cra babel-plugin-import antd
 ```
 
 ```js
-// 在羡慕根目录下创建 config-overrides.js
+// 在项目根目录下创建 config-overrides.js
 const {override, fixBabelImports} = require("customize-cra");
 
 module.exports = override(
