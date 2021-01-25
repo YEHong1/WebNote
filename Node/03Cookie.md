@@ -32,10 +32,10 @@ var cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 // 4.设置 cookie
-res.cookie("name",'zhangsan',{maxAge: 1000 * 60 * 60, httpOnly: true});
+res.cookie("cookie_name",'cookie_value',{maxAge: 1000 * 60 * 60, httpOnly: true});
 
 // 5. 获取 cookie
-req.cookies.name
+req.cookies['cookie_name']
 ```
 
 

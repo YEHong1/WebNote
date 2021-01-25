@@ -57,6 +57,30 @@
 
 
 
+## 1.2 ReactAPI
+
+```js
+// 1.创建react元素
+// 参数1 元素名称
+// 参数2 元素属性
+// 第三个及以后的参数都为元素的子节点
+// 需要安装react npm i react
+let title = React.createElement('h1', {id: 'title'}, 'hello react');
+
+// createElement()的问题
+// 1.繁琐不简洁	2.不直观，不能一眼看出扫描的结构
+
+// 2.渲染react元素
+// 参数1 要渲染的react元素
+// 参数2 挂载点
+// 需要安装 react-dom  npm i react-dom
+ReactDom.render(title, document.getElementById('root'));
+```
+
+
+
+
+
 ## 2.1 React脚手架
 
 ```js
@@ -281,7 +305,33 @@ class Com2 extends Component {
 
 >   当React遇到的元素是用户自定义的组件，它会将JSX属性作为单个对象传递给该组件，这个对象称之为Props。Props中的每一项称之为一个prop 
 
- Props 是只读的。不允许修改。 
+### Props的特点
+
+1.  props 是只读的。不允许修改。 
+
+2.  props可以接受任意类型的值
+
+3.  使用类组件时，如果写了构造函数，应该将 props 传递给 super() ,否则无法在构造函数中获得props
+
+    ```jsx
+    import React, {Component} from 'react';
+    
+    export default class App extends Component {
+        constructor() {
+            super();
+            console.log(this.props); // undefined
+        }
+    
+        render() {
+            return (
+                <h1>Hello world</h1>
+            )
+        }
+    }
+    ```
+
+
+
 
 ### Props 的类型校验 
 
@@ -386,31 +436,77 @@ class Hello extends React.Component {
 2.  State 的更新可能是异步的
 
     ```jsx
-    //如果需要读取更新后的值，需要在setState的第二个参数中读取
-    this.setState({
-        name: '123'
-    }, ()=>{
-        console.log(this.state.name)
-    })
+    // 在一般情况下，setState时异步的
+    // 点击前count值为0
+    handleClick = ()=>{
+        this.setState({
+            count: this.state.count + 1
+        }, ()=>{
+            console.log('callback', this.state.count) // count为1
+        });
+        console.log(this.state.count); // count为0，此处setState为异步
+    };
+    
+    
+    // 在setTimeout中， setState时同步的
+    handleClick = ()=>{
+        setTimeout(()=>{
+            this.setState({
+                count: this.state.count + 1
+            });
+            console.log(this.state.count); // count值为1， 此处setState为同步
+        }, 0)
+    };
+    
+    
+    // 自己定义的Dom事件中，setState是同步的
+    componentDidMount() {
+        document.addEventListener('click', ()=>{
+            this.setState({
+                count: this.state.count + 1
+            });
+            console.log(this.state.count) // count值为1， 此处setState为同步
+        })
+    }
     ```
 
 3.  State 的更新会被合并 
 
     ```jsx
-    <button
-        onClick={() => {
-            for (let i = 0; i < 5; i++) {
-                this.setState((prevState, props) => {
-                    console.log(prevState);
-                    return {
-                        counter: prevState.counter + 1
-                    };
-                });
-            }
-        }}
-        >
-        点我 + 5
-    </button>
+    // 传入对象，会被合并。下面的结果为 count + 1
+    // 因为setState在这种情况下为异步， 所以在第一次setState后，
+    // this.staet.count还是+1之前的值，后面执行多少次结果都一样
+    this.setState({
+        count: this.setState.count + 1
+    })
+    
+    this.setState({
+        count: this.setState.count + 1
+    })
+    
+    this.setState({
+        count: this.setState.count + 1
+    })
+    
+    
+    // 传入函数不会被合并, 下面的结果为count + 3
+    this.setState((preState, props)=>{
+        return {
+            count: prestate.count + 1
+        }
+    })
+    
+    this.setState((preState, props)=>{
+        return {
+            count: prestate.count + 1
+        }
+    })
+    
+    this.setState((preState, props)=>{
+        return {
+            count: prestate.count + 1
+        }
+    })
     ```
 
     
@@ -542,17 +638,81 @@ handleFn1 = () => {
 
 ### 父传子
 
-props
+父组件通过props传递数据给子组件
 
 ### 子传父
 
- 父组件给子组件提供一个prop。prop的值是一个方法，然后在子组件中调用这个方法。 
+ 父组件提供回调函数通过prop传递给子组件，子组件调用，将要传递的数据作为回调函数的参数。
 
 ### 兄弟组件
 
+1.将要通信的数据状态提升到共同的父组件，由父组件管理这个状态。
+
+2.父组件通过props传递这个数据和操作这个数据的回调函数。
+
+### 父组件调用子组件的方法或数据
+
+使用ref绑定子组件
 
 
 
+## 8.2 跨组件传递数据
+
+当我们想要将A组件中的数据传递给A组件的孙子组件时，需要先传递给A组件的子组件，再由这个子组件传递给它的子组件，一步一步往下传，这太过麻烦，这种情况适合使用 Contex
+
+### 使用步骤
+
+
+
+```jsx
+import React, {Component} from 'react';
+// 1.调用React.createContex()创建Prodiver（提供数据）和Consumer（消费数据）两个组件
+const {Provider, Consumer} = React.createContext();
+
+export default class App extends Component {
+    render() {
+        return (
+            // 2.使用Provider组件作为父节点
+            // 设置value属性，表示要传递的数据
+            <Provider value={{name: '张三', age: 18}}>
+                <div>
+                    <p>App</p>
+                    <Node/>
+                </div>
+            </Provider>
+        )
+    }
+};
+
+class Node extends Component{
+    render() {
+        return(
+            <div>
+                <p>Node</p>
+                <SuperNode/>
+            </div>
+        )
+    }
+}
+
+// 3.调用Consumer组件接受数据
+class SuperNode extends Component{
+    render() {
+        return(
+            <div>
+                <p>SuperNode</p>
+                <Consumer>
+                    {
+                        data=>{
+                            console.log(data)
+                        }
+                    }
+                </Consumer>
+            </div>
+        )
+    }
+}
+```
 
 
 
@@ -809,13 +969,106 @@ export default class App extends Component{
 
 
 
+## 10.1 组件的生命周期
+
+>   组件的生命周期：组件从被创建到 挂载到页面中运行，再到卸载的过程。
+>
+>    生命周期的每个阶段追伴随着一些方法的调用，这些方法就是生命周期的钩子函数
+>
+>   钩子函数的作用：为开发人员在不同阶段操作组件提供了时机
+>
+>   只有类组件才有生命周期
 
 
 
+![](.\images\react生命周期.webp)
 
 
 
+## 生命周期的三个阶段
 
 
 
+### 1.创建时（挂载阶段）
+
+-   执行时机：组件被创建时（页面在加载时）
+-   执行顺序： constructor      componentWillMount()      render      componentDidMount
+
+```js
+// constructor
+constructor()中完成了React数据的初始化，它接受两个参数：props和context，当想在函数内部使用这两个参数时，需使用super()传入这两个参数。
+注意：只要使用了constructor()就必须写super(),否则会导致this指向错误。
+
+// componentWillMount
+componentWillMount()一般用的比较少，它更多的是在服务端渲染时使用。它代表的过程是组件已经经历了constructor()初始化数据后，但是还未渲染DOM时。
+
+// render
+render函数会插入jsx生成的dom结构，react会生成一份虚拟dom树，在每一次组件更新时，在此react会通过其diff算法比较更新前后的新旧DOM树，比较以后，找到最小的有差异的DOM节点，并重新渲染。
+
+// componentDidMount
+组件第一次渲染完成，此时dom节点已经生成，可以在这里调用ajax请求，返回数据setState后组件会重新渲染
+
+```
+
+
+
+### 2.更新阶段
+
+以下三种情况会导致更新：
+
+-    setState()
+-   接受的props发生改变
+-   组件调用 forceUpdate() 强制更新组件
+
+```js
+// componentWillReceiveProps (nextProps)
+在接受父组件改变后的props需要重新渲染组件时用到的比较多
+接受一个参数nextProps
+通过对比nextProps和this.props，将nextProps的state为当前组件的state，从而重新渲染组件
+
+
+// shouldComponentUpdate(nextProps,nextState)
+主要用于性能优化(部分更新)
+唯一用于控制组件重新渲染的生命周期，由于在react中，setState以后，state发生变化，组件会进入重新渲染的流程，在这里return false可以阻止组件的更新
+因为react父组件的重新渲染会导致其所有子组件的重新渲染，这个时候其实我们是不需要所有子组件都跟着重新渲染的，因此需要在子组件的该生命周期中做判断
+
+// componentWillUpdate (nextProps,nextState)
+shouldComponentUpdate返回true以后，组件进入重新渲染的流程，进入componentWillUpdate,这里同样可以拿到nextProps和nextState。
+
+// render
+
+// componentDidUpdate(prevProps,prevState)
+组件更新完毕后，react只会在第一次初始化成功会进入componentDidmount,之后每次重新渲染后都会进入这个生命周期，这里可以拿到prevProps和prevState，即更新前的props和state。
+
+```
+
+
+
+### 3.卸载阶段
+
+```js
+// componentWillUnmount 
+在此处完成组件的卸载和数据的销毁。
+
+1.clear你在组建中所有的setTimeout,setInterval
+2.移除所有组建中的监听 removeEventListener
+3.有时候我们会碰到这个warning:
+Can only update a mounted or mounting component. This usually      means you called setState() on an unmounted component. This is a   no-op. Please check the code for the undefined component.
+
+原因：因为你在组件中的ajax请求返回setState,而你组件销毁的时候，请求还未完成，因此会报warning
+解决方法：
+
+componentDidMount() {
+    this.isMount === true
+    axios.post().then((res) => {
+        this.isMount && this.setState({   // 增加条件ismount为true时
+              aaa:res
+            })
+    })
+}
+
+componentWillUnmount() {
+    this.isMount === false
+}
+```
 

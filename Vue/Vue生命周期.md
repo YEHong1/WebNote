@@ -6,7 +6,7 @@
 
 ### 说明
 
-在实例初始化之后，数据观测（data observer） 和 事件配置（event/watch）之前被调用。
+在实例初始化之后，数据观测（data observer） 和 事件初始化（event/watch）之前被调用。
 
 此时，data、methods、computed、watch、DOM都不能被使用
 
@@ -50,7 +50,9 @@
 
 ### 说明
 
- 在实例创建完成后被立即调用，可以操作data、computed、watch、methods，但DOM还没挂载，不能操作。 
+在实例创建完成后被立即调用，已完成数据观测和事件初始化。
+
+可以操作data、computed、watch、methods，但DOM还没挂载，不能操作。 
 
 ```js
   created () {

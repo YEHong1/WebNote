@@ -30,14 +30,14 @@ Ajax 相当于浏览器发送请求与接收响应的代理人，以实现在不
 ## 1.3.2**Ajax** 的实现步骤
 
 ```js
-//get
-//1.创建 Ajax 对象
+// get
+// 1.创建 Ajax 对象
 let xhr = new XMLHttpRequest();
-//2.告诉 Ajax 请求地址以及请求方式
+// 2.告诉 Ajax 请求地址以及请求方式
 xhr.open('get', 'http://www.example.com');
-//3.发送请求
+// 3.发送请求
 xhr.send();
-//4.获取服务器端给与客户端的响应数据
+// 4.获取服务器端给与客户端的响应数据
 // 当ajax状态码发生变化的时候出发
 xhr.onreadystatechange = function() {
 	// 2 请求已经发送了
@@ -52,7 +52,7 @@ xhr.onreadystatechange = function() {
 
 
 
-//post
+// post
 let xhr = new XMLHttpRequest();
 // 拼接请求参数
 let nameValue = 'andy';

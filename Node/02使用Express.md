@@ -48,6 +48,12 @@ app.get('/login', (req, res)=>{
     res.send('login.page');
 });
 
+// 动态路由
+app.get('/user/:id', (req, res)=>{
+    console.log(id);
+    res.send('login.page');
+});
+
 //post
 app.get('/pushImg', (req, res)=>{
     res.send('pushImg.page');
@@ -68,65 +74,32 @@ app.use(express.static('./public'));
 
 
 
-## 1.2.1配置使用 art-template 模板引擎
-
-安装：
+## 1.2.1使用中间件
 
 ```js
-npm install --save art-template
-npm install --save express-art-template
-```
+const express = require('express');
+const app = new express();
 
-Example
+// 应用中间件，放在路由前面。
+// 每一次访问都会经过这里，调用next() 往下执行，不调用则不再往下执行。可以在这里做权限判断
+app.use((req, res, next) => {
+    const {isAdmin} = req.query;
+    if(isAdmin){
+        next();
+    }
+})
 
-```js
-let express = require('express');
-let app = express();
+app.get('/', (req, res) => {
+    res.send('Hello Express')
+})
 
-// 配置使用 art-template 模板引擎
-//第一个参数 art 表示： 当渲染以.art文件时，使用art-template模板引擎
-//一般我们会把art替换为html，这样可以使用html文件了
-//app.engine('art', require('express-art-template'));
-app.engine('html', require('express-art-template'));
-
-app.set('views', path.join(__dirname, 'views'));
-
-// routes
-app.get('/', function (req, res) {
-    //res.render()方法默认不可使用，只有在配置了模板引擎时才可以使用
-    //res.render('html模板名', {模板数据})
-    //需要注意的是，第一个参数不能写路径，默认回去views目录查找该模板文件
-    res.render('index.html', {
-        user: {
-            name: 'aui',
-            tags: ['art', 'template', 'nodejs']
-        }
-    });
-});
-```
+// 错误处理中间件（其实就是放在路由后面，当所有的路由都不匹配时，进入该中间件）
+app.use((req, res) => {
+    res.send('Not Found')
+})
 
 
-
-配置：
-
-```js
-app.engine('html', require('express-art-template'));
-```
-
-使用：
-
-```js
-app.get('/', function (req, res) {
-    res.render('index.html', {
-        title: '学生管理系统'
-    });
-});
-```
-
-如果希望修改默认的 views 视图渲染存储目录
-
-```js
-app.set('views', 希望存储页面的目录路径);
+app.listen(3000)
 ```
 
 
@@ -166,16 +139,22 @@ let app = express()
 
 //2.加入这个配置后，req请求对象上回多出一个属性：body
 //我们可以通过req.body来获取POST请求体的数据
-// parse application/x-www-form-urlencoded
+// parse application/x-www-form-urlencoded 前端以form表单格式传递参数
 app.use(bodyParser.urlencoded({ extended: false }))
 
-// parse application/json
+// parse application/json 前端以json格式传递参数
 app.use(bodyParser.json())
 
-app.use(function (req, res) {
-  res.setHeader('Content-Type', 'text/plain')
-  res.write('you posted:\n')
-  res.end(JSON.stringify(req.body, null, 2))
+app.post('/login', (req, res) => {
+    // 用req.body接受传递过来的参数
+    const {username, password} = req.body;
+    res.send({
+        code: 200,
+        date: {
+            username,
+            password
+        }
+    })
 })
 ```
 
@@ -296,12 +275,11 @@ module.exports = router;
 let express = require('express');
 //1.引入router.js
 let router = require('./router');
-//http.createServer()
 let app = express();
 
 
 //2.把路由器加载到服务中
-app.use(router);
+app.use('/indexRouter', router);
 
 
 app.listen(3000, () => {
