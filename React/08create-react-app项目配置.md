@@ -62,56 +62,62 @@ module.exports = function (app) {
 
 
 
-## 3.按需加载Antd，配置less、路径别名
+## 3.按需加载`Antd`，配置less、路径别名
 
 配置预处理器有两种方法
 
 - 运行 npm run eject， 把webpack暴露出来， 不建议这种操作
-- 新建一个文件来覆盖 webpack配置，下面介绍的就是这种
+- 新建一个文件来覆盖 `webpack`配置，下面介绍的就是这种 （ `craco` ）
 
 ```js
 1.安装依赖包
-yarn add react-app-rewired customize-cra babel-plugin-import less less-loader antd
+yarn add @craco/craco craco-less
 
-注意：如果出现这样的报错提示 this.getOptions is not a function，是因为less-loader的版本过高，可以尝试安装 less-loader@5.0.0
 
-2.在项目根目录下创建config-overrides.js文件
-const { override, fixBabelImports, addLessLoader, addWebpackAlias } = require("customize-cra");
-const path = require("path");
+2.在项目根目录下创建 craco.config.js 文件
+const CracoLessPlugin = require('craco-less');
+const { resolve } = require('path');
 
-module.exports = override(
-  // 针对antd 实现按需打包：根据import来打包 (使用babel-plugin-import)  
-  fixBabelImports("import", {    
-    libraryName: "antd",    
-    libraryDirectory: "es",    
-    style: true, // 自动打包相关的样式 默认为 style:'css'  
-  }),
-  // 使用less-loader对源码中的less的变量进行重新制定，设置antd自定义主题  
-  addLessLoader({  
-    javascriptEnabled: true,    
-    modifyVars: { "@primary-color": "#1DA57A" },  
-  }),
-  //增加路径别名的处理 
-  addWebpackAlias({  
-    '@': path.resolve('./src')  
-  })
-); 
+module.exports = {
+	plugins: [
+		{
+			// 这里是配置less的
+			plugin: CracoLessPlugin,
+			// 下面这块是配置antd的按需引入
+			options: {
+				lessLoaderOptions: {
+					lessOptions: {
+						// 这里利用了 less-loader 的 modifyVars 来进行主题配置
+						modifyVars: { '@primary-color': '#1DA57A' },
+						javascriptEnabled: true,
+					},
+				},
+			},
+		},
+	],
+	webpack: {
+		// 配置路径别名
+		alias: {
+			'@': resolve("src")
+		}
+	}
+};
+
 
 
 3.修改package.json 中的 script 指令
  "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react--app-rewired test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
  },
 ```
 
 
 
-## 4.以HTTPS启动项目
+## 4.以`HTTPS`启动项目
 
-某些SDK只在 https 的网站上生效，我们可以这样做
+某些`SDK`只在 `https` 的网站上生效，我们可以这样做
 
 ```js
 // 在项目根路径创建 .env文件

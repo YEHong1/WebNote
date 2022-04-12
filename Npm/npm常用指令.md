@@ -15,3 +15,9 @@
 | 换源                 | npm config set registry xxx                                  |
 | 资源锁文件           | package-lock.json                                            |
 
+
+
+## 2.yarn常用指令
+
+
+

@@ -69,7 +69,6 @@ let title = React.createElement('h1', {id: 'title'}, 'hello react');
 // createElement()的问题
 // 1.繁琐不简洁	2.不直观，不能一眼看出描述的结构
 
-
 // jsx 是 React.createElement 的语法糖，用于描述虚拟DOM结构的
 const vDom = <h1 id='title'>Hello World</h1>
 
@@ -78,20 +77,21 @@ const vDom = <h1 id='title'>Hello World</h1>
 // 参数2 挂载点
 // 需要安装 react-dom  npm i react-dom
 ReactDom.render(title, document.getElementById('root'));
+
+// jsx语法在打包阶段已经被编译成JavaScript纯对象，这个过程由Babel的jsx编译器实现
+jsx --> babel 编译 --> JavaScript对象 --> ReactDom.render() --> 将JavaScript对象渲染成DOM元素并插入到页面
 ```
 
 
 
 ## 1.5 React的特点
 
--   **声明式设计** - 采用声明范式，可以轻松描述应用
+-   **声明式设计** - 采用声明范式，可以轻松描述应用 
 -   **高效** - 通过对DOM的模拟，最大限度的减少与DOM的交互
 -   **灵活** - 可以与已知的库或框架很好的配合
 -   **JSX** - 使用JSX语法来描述DOM结构
 -   **组件** - 通过构建组件，使得代码更加容易得到复用，能够很好的应用在大项目的开发中。
--   **单向数据流** - React 实现了单向响应的数据流，从而减少了重复代码，这也是它为什么比传统数据绑定更简单。
-
-
+-   **单向数据流** - React 实现了单向响应的数据流（父组件流向子组件的数据，子组件不允许修改），从而减少了重复代码，这也是它为什么比传统数据绑定更简单。
 
 
 
@@ -702,7 +702,33 @@ React 使用的是自定义(合成)事件, 而不是使用的原生DOM事件，�
 
 
 
-## 9. 高阶组件
+## 9.组件间通信
+
+- 父子组件通信：
+
+  ```js
+  // 1.传递数据(父传子)与传递方法(子传父)
+  // 2.ref标记 (父组件拿到子组件的引用，从而调用子组件的方法)
+  ```
+
+- 非父子组件间通信
+
+  ```js
+  // 1.状态提升
+  将多个组件需要共享的state提升到它们最近的父组件上，在父组件上改变状态，通过props分发给子组件
+  
+  // 2.发布订阅模式
+  
+  
+  // 3.context
+  缺点：当需要接收context数据的组件(A)的某个上级组件 shouldComponentUpdate 返回false时，context的更新不会引起下级组件(A)的更新
+  ```
+
+  
+
+
+
+## 10.高阶函数
 
 说高阶组件前，先来理解一下什么是高阶函数
 
@@ -720,9 +746,9 @@ React 使用的是自定义(合成)事件, 而不是使用的原生DOM事件，�
 
 
 
-## 10.生命周期
+## 11.生命周期
 
-随着React 17的更新，React的生命周期也发生了些许改变，我们先来复习一下旧版本的生命周期
+随着React 17的更新，React的生命周期也发生了些许改变，我们先来复习一下旧版本的生命    周期
 
 ### 旧版本生命周期
 
@@ -745,7 +771,7 @@ constructor()中完成了React数据的初始化，它接受两个参数：props
 注意：只要使用了constructor()就必须写super(),否则会导致this指向错误。
 
 // componentWillMount
-componentWillMount()一般用的比较少，它更多的是在服务端渲染时使用。它代表的过程是组件已经经历了constructor()初始化数据后，但是还未渲染DOM时。
+componentWillMount()一般用的比较少，它更多的是在服务端渲染时使用。它代表的过程是组件已经经历了constructor()初始化数据后，但是还未渲染DOM时。 
 
 // render
 render函数会插入jsx生成的dom结构，react会生成一份虚拟dom树，在每一次组件更新时，在此react会通过其diff算法比较更新前后的新旧DOM树，比较以后，找到最小的有差异的DOM节点，并重新渲染。

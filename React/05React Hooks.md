@@ -2,7 +2,12 @@
 
 ## 1.1. hook是什么
 
- *Hook* 是 React 16.8 的新增特性，它可以让我们在不编写class的情况下使用state以及其他的React特性（比如生命周期）。 
+ `hook` 是 React 16.8 的新增特性，它可以让我们在不编写class的情况下使用state以及其他的React特性（比如生命周期）。 
+
+使用`Hooks`的原则：
+
+- 只在`react`函数中使用`hook`，不能在`JavaScript`函数中使用
+- 只在最顶层使用`hook`，不要在循环，条件或嵌套函数中调用 `hook`
 
 
 
@@ -256,6 +261,48 @@ export default memo(Game);
 ```
 
 
+
+## 2.5 自定义hook
+
+自定义`hook`是一个函数，函数名称以`use`开头，函数内部可以调用其它的`hook`
+
+自定义`hook`和函数组件的区别在于：**自定义 `Hook` 函数偏向于功能，而组件偏向于界面和业务逻辑**
+
+下面是一个例子，用来监听浏览器尺寸的的变化
+
+```react
+// 自定义hook
+import { useState, useEffect, useCallback } from 'react';
+
+const useWinSize = ()=>{
+	const [ size , setSize] = useState({
+		width: document.documentElement.clientWidth,
+		height: document.documentElement.clientHeight
+	})
+
+	const onResize = useCallback(()=>{
+		setSize({
+			width: document.documentElement.clientWidth,
+			height: document.documentElement.clientHeight
+		})
+	},[])
+
+	useEffect(()=>{
+		window.addEventListener('resize', onResize)
+		return ()=>{
+			window.removeEventListener('resize', onResize)
+		}
+	},[])
+
+	return size;
+}
+
+export default useWinSize();
+
+
+// 使用方法： 只需要在react组件中引入并调用即可
+const size = useWinSize();
+```
 
 
 
