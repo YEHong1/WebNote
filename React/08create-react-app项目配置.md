@@ -5,7 +5,7 @@
 npx create-react-app 项目名称
 
 // 创建 TypeScript 项目
-npx create-react-app 项目名称 --template t
+npx create-react-app 项目名称 --template typescript
 ```
 
 
@@ -62,7 +62,24 @@ module.exports = function (app) {
 
 
 
-## 3.按需加载`Antd`，配置less、路径别名
+## 3.以`HTTPS`启动项目
+
+某些`SDK`只在 `https` 的网站上生效，我们可以这样做
+
+```js
+// 在项目根路径创建 .env文件
+
+// 启用HTTPS
+HTTPS=true
+// 修改端口号
+PORT=3600
+// 是否开启sourcemap
+GENERATE_SOURCEMAP=false
+```
+
+
+
+## 4.按需加载`Antd`，配置less、路径别名
 
 配置预处理器有两种方法
 
@@ -115,18 +132,33 @@ module.exports = {
 
 
 
-## 4.以`HTTPS`启动项目
-
-某些`SDK`只在 `https` 的网站上生效，我们可以这样做
+## 5.移动端适配（vw）
 
 ```js
-// 在项目根路径创建 .env文件
+// 也是在craco的基础上配置
+1. yarn add postcss-px-to-viewport
 
-// 启用HTTPS
-HTTPS=true
-// 修改端口号
-PORT=3600
-// 是否开启sourcemap
-GENERATE_SOURCEMAP=false
+2.在 craco.config.js 添加 style 配置
+const pxToViewport = require('postcss-px-to-viewport')
+
+module.exports = {
+	webpack: {},
+  style: {
+		postcss: {
+			mode: 'extends',
+			loaderOptions: {
+				postcssOptions: {
+					ident: 'postcss',
+					plugins:[
+						pxToViewport({
+							// 视口宽度(设计稿宽度)
+							viewportWidth: 375
+						})
+					]
+				}
+			}
+		}
+	}
+};
 ```
 

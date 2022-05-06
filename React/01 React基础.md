@@ -713,20 +713,76 @@ React 使用的是自定义(合成)事件, 而不是使用的原生DOM事件，�
 
 - 非父子组件间通信
 
-  ```js
-  // 1.状态提升
-  将多个组件需要共享的state提升到它们最近的父组件上，在父组件上改变状态，通过props分发给子组件
+  1. 状态提升
   
-  // 2.发布订阅模式
+     将多个组件需要共享的state提升到它们最近的父组件上，在父组件上改变状态，通过props分发给子组件
+  
+     
+  
+  2. context
+  
+     缺点：当需要接收context数据的组件(A)的某个上级组件 shouldComponentUpdate 返回false时，context的更新不会引起下级组件(A)的更新
+  
+     
+  
+  3. 发布订阅模式
+  
+     以b站平台为例，你关注了一个up主，当这个up主发布新视频时，你将得到平台的消息提醒，这就是典型的发布订阅模式
+  
+     ```js
+     // 先写一个原生JavaScript的代码写法
+     const eventBus = {
+       // 存放被订阅的事件回调函数
+       state: {
+         // key 对应时间名称， value为一个数组，用来存放对应的监听函数列表
+         message: [],
+       },
+       // 订阅 传递订阅的时间类型和回调函数
+       subscribe(eventName, callback) {
+         // 添加到state中
+         const list = this.state[eventName] || [];
+         this.state[eventName] = [...list, callback];
+       },
+       // 发布，触发对应的订阅事件
+       publish(eventName, value) {
+         const list = this.state[eventName];
+         list.forEach((callback) => callback && callback(value));
+       },
+     };
+     
+     // 订阅事件 submit
+     eventBus.subscribe("submit", (value) => console.log(value));
+     
+     // 发布，触发时间 submit
+     eventBus.publish("submit", "submit时间被触发");
+     // 输出 submit时间被触发
+     ```
+  
+     ```js
+     // react 中的用法
+     1.新建一个 eventBus.js
+     import { EventEmitter } from "events";
+     export default new EventEmitter();
+     
+     2.在组件A中订阅事件
+     import eventBus from "@/eventBus";
+     // 事件名称、回调函数
+     eventBus.addListener("message", (message) => {
+       alert(message);
+     });
+     
+     // 如果需要取消监听，用removeListener
+     eventBus.removeListener("message");
+     
+     3.在另一个组件中触发事件触传递信息
+     import eventBus from "@/eventBus";
+     // 事件名称、传递的数据
+     eventBus.emit("message", "hello world");
+     ```
+  
+     
   
   
-  // 3.context
-  缺点：当需要接收context数据的组件(A)的某个上级组件 shouldComponentUpdate 返回false时，context的更新不会引起下级组件(A)的更新
-  ```
-
-  
-
-
 
 ## 10.高阶函数
 

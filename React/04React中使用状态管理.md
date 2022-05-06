@@ -493,7 +493,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(App)
 
 我们知道，网络请求可以在class组件的componentDidMount中发送，所以我们可以有这样的结构 
 
-![](E:\笔记\React\images\redux01.png)
+![](.\images\redux01.png)
 
 也就是先发起网络请求，请求成功获得数据后，再通过dispatch action来更新数据。
 

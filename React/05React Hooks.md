@@ -264,6 +264,8 @@ export default memo(Game);
 
 ## 2.5 自定义hook
 
+当我们有多个组件有共同的逻辑的时候就可以考虑使用自定义`hook`
+
 自定义`hook`是一个函数，函数名称以`use`开头，函数内部可以调用其它的`hook`
 
 自定义`hook`和函数组件的区别在于：**自定义 `Hook` 函数偏向于功能，而组件偏向于界面和业务逻辑**
@@ -508,6 +510,17 @@ export default function App(){
 
 
 
+```js
+// useMemo 还可以用来代替 useCallback 返回一个记忆函数, 下面两个用法的功能都是等价的，区别在于，useCallback不会执行第一个参数，
+
+// useCallback(fn, 依赖项) 
+// useMemo(()=> fn, 依赖项) 
+```
+
+
+
+
+
 ## 3.4 useRef
 
  useRef返回一个ref对象，返回的ref对象在组件的整个生命周期保持不变。 
@@ -682,7 +695,34 @@ export default function App() {
 }
 ```
 
+```jsx
+// useEffect能解决99%的场景，那么什么时候应该用 useLayoutEffect 呢？
 
+import {useState, useLayoutEffect} from "react";
+
+const App = () => {
+  const [count, setCount] = useState(0);
+  
+  useLayoutEffect(() => {
+    count === 0 && setCount(Date.now());
+  }, [count]);
+
+  return (
+    <div onClick={() => setCount(0)}>
+      {count}
+    </div>
+  );
+};
+
+export default App;
+
+// 该案例中，如果使用 useEffect 来监听 count的变化，当用户快速多次点击div时，count的值会页面中疯狂闪烁 ( 在 0 和 时间戳中频繁切换 )
+// 利用 useLayoutEffect 可以阻塞DOM渲染的特性，DOM中的count永远不会为0，也就不会出现闪烁的情况
+
+相比使用 useEffect，当你点击 div，count 更新为 0，此时页面并不会渲染，而是等待 useLayoutEffect 内部状态修改后，才会去更新页面，所以页面不会闪烁。
+
+总结：useLayoutEffect 相比 useEffect，通过同步执行状态更新可解决一些特殊场景下的页面闪烁问题。
+```
 
 
 
