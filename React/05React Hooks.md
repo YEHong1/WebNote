@@ -234,11 +234,17 @@ export default function Child(){
 
 ## 2.4 memo
 
-当父组件的state或者prop发生变化时，会触发子组件的重新渲染，即使这个子组件对父组件的state没有任何依赖。我们想要像类组件的 pureComponent 那样，当子组件的props没有发生变化时，父组件的的更新不会导致子组件的重新渲染。这个时候只需要将这个子组件作为参数传递给memo函数即可。
+当父组件的`state`或者`prop`发生变化时，会触发子组件的重新渲染，即使这个子组件对父组件的state没有任何依赖。我们想要像类组件的 pureComponent 那样，当子组件的props没有发生变化时，父组件的的更新不会导致子组件的重新渲染。这个时候只需要将这个子组件作为参数传递给memo函数即可。
 
-hook中 的 memo 和 类组件的 pureComponent 是一样的效果。
+`memo`和`PureComponent`作用类似，可以用作性能优化，`memo` 是高阶组件，函数组件和类组件都可以使用， 和`PureComponent`的区别是 `memo`只能针对`props`的情况确定是否渲染，而`PureComponent`是针对`props`和`state`。
+
+`memo` 接受两个参数，第一个参数原始组件本身，第二个参数，可以根据一次更新中`props`是否相同决定原始组件是否重新渲染。是一个返回布尔值，`true` 证明组件无须重新渲染，`false`证明组件需要重新渲染，这个和类组件中的`shouldComponentUpdate()`正好相反 。
+
+`memo`： 第二个参数 返回 true 组件不渲染 ， 返回 false 组件重新渲染。
+`shouldComponentUpdate`： 返回 true 组件渲染 ， 返回 false 组件不渲染。
 
 ```jsx
+// 基础例子
 import React, {memo, useState} from "react";
 
 const Game = ()=>{
@@ -257,8 +263,36 @@ const Game = ()=>{
 
 export default memo(Game);
 
+```
+
+
+
+```jsx
+// 需求，组件有一个props：count，当count发生改变且改变后的值小于6时，组件才会重新渲染
+import { memo, useEffect } from 'react';
+
+const Child: React.FC<propsType> = ({ count })=>{
+
+  useEffect(()=>{
+    console.log(count);
+  }, [count])
+
+  return(
+    <div>
+      <p>Child</p>
+      <span>count: {count}</span>
+    </div>
+  )
+}
+
+export default memo(Child, (pre, next)=>{
+  // 返回false时表示需要重新渲染
+  return (next.count === pre.count || next.count > 6)
+})
 
 ```
+
+
 
 
 

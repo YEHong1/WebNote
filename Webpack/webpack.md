@@ -276,7 +276,7 @@ module.exports = {
                     esModule: false,
                     //图片重命名
                     //[hash:10] 使用hash值得前10位来命名
-                    //[ext] 取原文件的扩展名
+                    //[ext] 取原文件的扩展名`
                     name:'[hash:10].[ext]'
                 }
             },
