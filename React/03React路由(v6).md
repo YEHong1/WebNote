@@ -9,7 +9,7 @@ elemnt: 新增属性，用于决定路由匹配时渲染那个组件，替代了
 
 3.<Routes> 代替了 <Switch>
   
-4.<Outlet> 用来渲染只组件，路由嵌套更简单
+4.<Outlet> 用来渲染子组件，路由嵌套更简单
 
 5.useNavigate 代替 useHistory
 
@@ -78,5 +78,14 @@ export default App;
 // 编程式导航
 const navigate = useNavigate()
 navigate('/index/b', { replace: true })
+```
+
+
+
+## 5.`useRouter`实现路由配置
+
+```jsx
+// src/router/index.tsx
+
 ```
 
