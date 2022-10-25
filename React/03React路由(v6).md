@@ -9,13 +9,15 @@ elemnt: 新增属性，用于决定路由匹配时渲染那个组件，替代了
 
 3.<Routes> 代替了 <Switch>
   
-4.<Outlet> 用来渲染子组件，路由嵌套更简单
+4.<Outlet> 用来渲染子路由，类似vue的 <router-view />
+  
+5.移除了 <Redirect />， 重定向使用 <Navigate />
 
-5.useNavigate 代替 useHistory
+6.useNavigate 代替 useHistory
 
-6.移除了 <NavLink> 的 activeClassName 和 activeStyle
+7.移除了 <NavLink> 的 activeClassName 和 activeStyle
 
-7.钩子useRoutes 代替 react-router-config的作用
+8.可以使用 useRoutes 来进行 配置式路由
 ```
 
 
@@ -86,6 +88,44 @@ navigate('/index/b', { replace: true })
 
 ```jsx
 // src/router/index.tsx
+import { RouteObject } from 'react-router-dom';
+import LayoutPage from "../pages/LayoutPage";
+import Home from "../pages/Home";
+import Login from "../pages/user/Login";
+import UserInfo from "../pages/UserInfo";
+
+const router: RouteObject[] = [
+	{
+		path: '/',
+		element: <LayoutPage />,
+		children: [
+			{ path: '/index', element: <Home /> },
+			{ path: '/userInfo/:id', element: <UserInfo /> },
+		]
+	},
+	{ path: '/user/login', element: <Login /> },
+	{ path: '*', element: 'Not Found' }
+];
+
+export default router;
+
+
+// 在根组件处使用 useRoute 来渲染
+import { BrowserRouter, useRoutes } from 'react-router-dom';
+import router from "./routers";
+
+const App = ()=>{
+	return useRoutes(router)
+}
+
+export default App;
+```
+
+
+
+## 添加路由懒加载
+
+```jsx
 
 ```
 
