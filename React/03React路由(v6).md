@@ -88,7 +88,7 @@ navigate('/index/b', { replace: true })
 
 ```jsx
 // src/router/index.tsx
-import { RouteObject } from 'react-router-dom';
+import { RouteObject, Navigate } from 'react-router-dom';
 import LayoutPage from "../pages/LayoutPage";
 import Home from "../pages/Home";
 import Login from "../pages/user/Login";
@@ -101,6 +101,8 @@ const router: RouteObject[] = [
 		children: [
 			{ path: '/index', element: <Home /> },
 			{ path: '/userInfo/:id', element: <UserInfo /> },
+            // 重定向
+            { path: '/resetPath', element: <Navigate to={'/index'} /> },
 		]
 	},
 	{ path: '/user/login', element: <Login /> },
@@ -111,7 +113,7 @@ export default router;
 
 
 // 在根组件处使用 useRoute 来渲染
-import { BrowserRouter, useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import router from "./routers";
 
 const App = ()=>{
@@ -125,7 +127,123 @@ export default App;
 
 ## 添加路由懒加载
 
+```tsx
+// src/router/index.tsx
+import { lazy, ReactElement, Suspense } from 'react';
+import { RouteObject, Navigate } from 'react-router-dom';
+import LayoutPage from "../pages/LayoutPage";
+const Home = lazy(()=> import('../pages/Home'))
+const Login = lazy(()=> import('../pages/user/Login'))
+const UserInfo = lazy(()=> import('../pages/UserInfo'))
+
+const LazyLoad = (lazyComponent: ReactElement, fallback: any = 'loading')=>{
+	return(
+		<Suspense fallback={fallback}>
+			{lazyComponent}
+		</Suspense>
+	)
+}
+
+const router: RouteObject[] = [
+	{
+		path: '/',
+		element: <LayoutPage />,
+		children: [
+			{ path: '/index', element: LazyLoad(<Home />) },
+			{ path: '/userInfo/:id', element: LazyLoad(<UserInfo />) },
+			{ path: '/resetPath', element: <Navigate to={'/index'} /> },
+		]
+	},
+	{ path: '/user/login', element: LazyLoad(<Login />) },
+	{ path: '*', element: 'Not Found' }
+];
+
+export default router;
+```
+
+
+
+## 6.获取路由参数
+
+- 获取 `query`形式的参数
+
 ```jsx
+// index?qq=870628496&name=abc&name=zxc
+import { useSearchParams } from 'react-router-dom';
+
+const Home = ()=>{
+	// 主要用到 params的 get 和 getAll 方法
+	const [params] = useSearchParams();
+	console.log(params.get('qq'))
+    // 获取第一个参数名称为name的参数值
+	console.log(params.get('name'))  // abc
+    // 获取是由参数名称为name的参数值，返回一个字符串数组
+	console.log(params.getAll('name')) // ['abc', 'zxc']
+
+	return(
+		<div>
+			<span>Home</span>
+		</div>
+	)
+}
+
+export default Home;
 
 ```
+
+
+
+- 获取动态参数
+
+```jsx
+//  在路由中定义/userInfo/:userId
+import { useParams } from 'react-router-dom';
+
+const UserInfo = ()=>{
+	const params = useParams();
+	return(
+		<div>{params.userId}</div>
+	)
+}
+
+export default UserInfo;
+```
+
+
+
+## 7.路由监听
+
+```tsx
+// 可以在App组件中添加对路由地址的监听，从而实现一个全局路由守卫
+import { useEffect } from "react";
+import { useRoutes, useLocation } from 'react-router-dom';
+import router from "./routers";
+
+const App = ()=>{
+
+	const location = useLocation();
+
+	useEffect(()=>{
+		console.log('当前路由', location.pathname);
+		// 如果当前用户没有权限访问该路由时，可以重定向到其它路由
+		return ()=>{
+			console.log(`从路由${location.pathname}离开`)
+		}
+	}, [location.pathname])
+
+	return (
+		useRoutes(router)
+	)
+}
+
+export default App;
+```
+
+
+
+
+
+
+
+
 
