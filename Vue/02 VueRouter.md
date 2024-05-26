@@ -4,17 +4,17 @@
 
 ## 二. 路由基本配置
 
-步骤1：安装路由插件
+步骤1：安装路由插件 （注意： `vue2`的路由只能使用3，4是给`vue3`用的）
 
 ```shell
-npm i vue-router --save
+npm i vue-router@3 --save
 ```
 
 步骤2： 配置路由信息
 
 提前创建了 Home组件和About组件
 
-创建router文件夹，在router文件夹中创建index.js来存放路由配置代码
+创建router文件夹，在router文件夹中创建`index.js`来存放路由配置代码
 
 ```js
 // router/index.js
@@ -164,7 +164,7 @@ export default {
 
 ## 2. router-view组件
 
-<router-view>  组件是一个 `functional` 组件，渲染路径匹配到的视图组件。`` 渲染的组件还可以内嵌自己 ``，根据嵌套路径，渲染嵌套组件。 
+<router-view>  组件是一个 `functional` 组件，渲染路径匹配到的视图组件。渲染的组件还可以内嵌自己 ，根据嵌套路径，渲染嵌套组件。 
 
 我们需要在路由跳转的时候添加一些过度动画可以配合<transition>使用。
 
@@ -232,7 +232,7 @@ $route是当前路由对象，主要用来获取传递到当前组件的参数
 
 ## 4.编程式导航
 
-编程式导航可以通过代码直接跳转路由，而无需用户去点击<router-link>标签。主要用到$router的API
+编程式导航可以通过代码直接跳转路由，而无需用户去点击<router-link>标签。主要用到$router的`API`
 
 ```js
 // 1.push
@@ -297,25 +297,26 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 
-// 跳转前，一般用来做数据校验、权限判断
+// 跳转前触发，一般用来做数据校验、权限判断
 router.beforeEach((to, from, next)=>{
     // to：即将要进入的目标 路由对象
     // from: 当前导航正要离开的路由
     // next: 是一个函数。一定要调用该方法来 resolve 这个钩子。执行效果依赖 next 方法的调用参数。
     // next(): 进行管道中的下一个钩子。如果全部钩子执行完了，则导航的状态就是 confirmed (确认的)。
-    // next(false): 中断当前的导航。如果浏览器的 URL 改变了 (可能是用户手动或者浏览器后退按钮)，那么 URL 地		 址会重置到 from 路由对应的地址。
+    // next(false): 中断当前的导航。如果浏览器的 URL 改变了 (可能是用户手动或者浏览器后退按钮)，那么 URL 地址会重置到 from 路由对应的地址。
     // next('/') 或者 next({ path: '/' }): 跳转到一个不同的地址。当前的导航被中断，然后进行一个新的导航。
     // next(error): (2.4.0+) 如果传入 next 的参数是一个 Error 实例，则导航会被终止且该错误会被传递给 	   router.onError() 注册过的回调。
     console.log('======router.beforeEach======')
     next()
 })
 
+// 和beforeEach没有太多得区别
 router.beforeResolve((to, from, next)=>{
     console.log('======router.beforeResolve======')
     next()
 })
 
-// 跳转后，不需要 next
+// 跳转后触发，没有next参数
 router.afterEach((to, from)=>{
     console.log('======router.afterEach======')
 })

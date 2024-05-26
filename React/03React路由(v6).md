@@ -1,3 +1,153 @@
+## 路由介绍
+
+```js
+1.什么是路由
+路由是根据不同的 url 地址展示不同的页面或内容
+
+2.什么是前端路由
+修改Url后，页面不刷新同时可以展示不同的界面。
+// 优点
+用户体验好，和后台网速没有关系，不需要每次都从服务器全部获取，快速展现给用户
+// 缺点
+使用浏览器的前进，后退键的时候会重新发送请求，没有合理地利用缓存
+
+
+3.什么是后端路由
+浏览器在地址栏中切换不同的url时，每次都向后台服务器发出请求，服务器响应请求，在后台拼接html文件传给前端显示, 返回不同的页面。
+// 优点
+分担了前端的压力，html和数据的拼接都是由服务器完成。
+// 缺点
+当项目十分庞大时，加大了服务器端的压力，同时在浏览器端不能输入指定的url路径进行指定模块的访问。
+另外一个就是如果当前网速过慢，那将会延迟页面的加载，造成空白页面，对用户体验不是很友好
+```
+
+​																																																																		
+
+## 前端路由原理
+
+ 原理：监听URL的变化，判断当前的URL，决定渲染的内容
+
+```js
+有2种模式，一种是Hash模式，另一种是History模式
+
+1.Hash模式原理
+// URL的hash也就是锚点('#'), 本质上是改变window.location的href属性
+// 通过赋值location.hash来改变href时，不会导致页面刷新。
+
+// 优点
+兼容性好，IE也支持
+// 缺点
+网页地址带有'#'号，不像一个真实的路径
+
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <!--通过锚点来改变hash-->
+        <a href="#/home">首页</a>
+        <a href="#/about">关于</a>
+    
+        <div class="router-view"></div>
+    </div>
+    
+    <script>
+        // 获取router-view的DOM
+        const routerViewEl = document.querySelector('.router-view');
+    
+        // 监听URL的改变
+        window.addEventListener("hashchange", () => {
+            switch (location.hash) {
+                case "#/home":
+                    routerViewEl.innerHTML = "首页";
+                    break;
+                case "#/about":
+                    routerViewEl.innerHTML = "关于";
+                    break;
+                default:
+                    routerViewEl.innerHTML = "";
+            }
+        })
+    </script>
+</body>
+</html>
+```
+
+```js
+2.History模式原理
+// history接口是HTML5新增的, 它有6种模式改变URL而不刷新页面
+replaceState：替换原来的路径
+pushState：使用新的路径
+popState：路径的回退
+go：向前或向后改变路径
+forward：向前改变路径
+back：向后改变路径
+
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <a href="/home">首页</a>
+        <a href="/about">关于</a>
+
+        <div class="router-view"></div>
+    </div>
+
+    <script>
+        // 1.获取router-view的DOM
+        const routerViewEl = document.querySelector('.router-view');
+
+        // 获取所有的a元素, 监听点击事件并阻止默认行为（阻止网页跳转刷新）
+        const aEls = document.getElementsByTagName("a");
+        for(let i=0; i<aEls.length; i++){
+            const el = aEls[i];
+            el.addEventListener("click", e => {
+                e.preventDefault();
+                const href = el.getAttribute("href");
+                history.pushState({}, "", href);
+                urlChange();
+            })
+        }
+
+        // 用户点击浏览器前进后退触发popstate监听
+        window.addEventListener('popstate',urlChange);
+        
+        // 监听URL的改变
+        function urlChange() {
+            switch (location.pathname) {
+                case "/home":
+                    routerViewEl.innerHTML = "首页";
+                    break;
+                case "/about":
+                    routerViewEl.innerHTML = "关于";
+                    break;
+                default:
+                    routerViewEl.innerHTML = "";
+            }
+        }
+
+    </script>
+</body>
+</html>
+```
+
+
+
 ## 1.`v5`和`v6`的区别
 
 ```js
@@ -117,6 +267,7 @@ import { useRoutes } from 'react-router-dom';
 import router from "./routers";
 
 const App = ()=>{
+    // 注意，useRouter 这类hooks只能在函数顶层使用，HashRouter标签只能放在项目的入口文件里写了
 	return useRoutes(router)
 }
 

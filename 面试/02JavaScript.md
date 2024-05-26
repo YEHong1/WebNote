@@ -19,7 +19,7 @@ const obj = { name: '张三', age: 18 }; // Object
 
 ## 2.引用数据类型和基本数据类型的区别
 
-原始数据类型：
+原始数据类型：                                                                                                                                                                                                                                                                       
 
 - 直接存储在**栈**（stack）中，占据空间小、大小固定，属于被频繁使用数据，所以放入栈中存储。
 
@@ -31,9 +31,9 @@ const obj = { name: '张三', age: 18 }; // Object
 
 
 
-## 3.typeof 能判断什么类型
+## 3.`typeof` 能判断什么类型
 
--   能识别所有的基本数据类型
+-   能识别除了`null`以外的所有的基本数据类型
 -   能够识别是不是函数
 -   能够识别是否是引用数据类型（**但不能识别是对象还是数组**）
 
@@ -91,7 +91,7 @@ function deepClone(obj = {}){
 
 
 
-## 6.turely变量和falsely变量
+## 6.`turely`变量和`falsely`变量
 
 ```js
 // turely变量： !!a === true a就是一个turyly变量
@@ -189,7 +189,7 @@ function creatCache() {
 	}
 }
 
-// 在函数外部无法直接读取 data 的
+// 在函数外部无法直接读取 data
 let dataCtr = creatCache();
 // 修改 data 的数据
 dataCtr.set('name', '盾勇');
@@ -465,7 +465,7 @@ let mult = (num)=> {
 
 ## 15.宏任务和微任务
 
-宏任务由浏览器决定，微任务由ES6规范决定
+宏任务由浏览器决定，微任务由`ES6`规范决定
 
 宏任务： `setTimeout、setInterval、ajax、DOM事件`
 
@@ -529,19 +529,19 @@ Promise 是ES规范，不是w3c标准。不会放到和 web api同一个队列�
 
 
 
-## 16.DOM是哪种基本的数据结构？
+## 16.`DOM`是哪种基本的数据结构？
 
 树 （DOM树）
 
 
 
-## 17.DOM的本质是什么？
+## 17.`DOM`的本质是什么？
 
 DOM可以理解为浏览器把拿到的html代码，结构化一个浏览器能识别并且js可操作的一个模型 
 
 
 
-## 18. DOM节点的 `attr` 和property有何区别？ 
+## 18. DOM节点的 `attr` 和`property`有何区别？ 
 
 `property`：修改对象属性，不会体现到 `html` 结构中
 
@@ -551,7 +551,7 @@ DOM可以理解为浏览器把拿到的html代码，结构化一个浏览器能�
 
 
 
-## 19.DOM性能优化
+## 19.`DOM`性能优化
 
 -   DOM操作比较消耗性能，避免频繁的DOM操作
 -   对DOM查询做缓存,避免重复查询 `let pNode = document.querySelector('#title')`
@@ -684,14 +684,14 @@ xhr.onreadystatechange = function (){
 -   `ajax`请求时，浏览器要求当前网页端和服务器端必须同源
 -   同源：协议（`http、https`）、域名（`www.a.com、www.b.com`）、端口（默认是80），三者必须一致
 
-### 加载 图片、`Css`、JS可无视同源策略
+### 加载 图片、`Css`、`JS`可无视同源策略
 
 -   `<img src="跨域图片地址" alt="">`
 -   `<link rel="stylesheet" href="跨域css地址">`
 -   `<script src="跨域js地址"></script>`，可以利用这个特性实现 `jsonp`
 -   所有的跨域，都必须经过服务端的允许和配合
 
-### JSONP
+### `JSONP`
 
 利用 `<sctipt>`可以绕过跨域、服务端可以任意动态拼接数据返回的特性，我们可以使用 `<script>`来获得跨域数据
 
@@ -744,7 +744,7 @@ app.listen(3036, ()=>{
 -   在没有`localStorage`、`sessionStorage`的时代，被借用来做存储
 -   可用 `document.cookie = ''` 来修改cookie
 
-##### 缺点：存储空间最大为4kb，http请求会携带cookie，增加了请求数据量
+##### 缺点：存储空间最大为`4kb`，`http`请求会携带cookie，增加了请求数据量
 
 ```js
 document.cookie = 'a=100;b=200';
@@ -760,7 +760,7 @@ console.log(document.cookie); // b=200;a=101
 
 ### `localStorage` 和 `sessionStorage`
 
--   Html5 专门为存储而设计的，最大存储空间为 5M
+-   `Html5` 专门为存储而设计的，最大存储空间为 `5M`
 -   不会随着 http 请求被发送出去
 -   `localStorage`的数据会永久存储，除非我们手动删除
 -   `sessionStorage`的数据只存在于当前会话，浏览器被关闭，则数据被清空
@@ -874,7 +874,7 @@ function throttle(fn, delay) {
 
 ## 30. 如何预防 `xsrf` 攻击 
 
-### 什么是CSRF
+### 什么是`CSRF`
 
 跨站请求攻击 ，是一种挟制用户在当前已登录的Web应用程序上执行非本意的操作的攻击方法。  
 

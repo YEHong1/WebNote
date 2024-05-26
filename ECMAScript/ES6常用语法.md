@@ -80,7 +80,7 @@ const A = 'A';
 1.对象的解构赋值
 let student = { name: '小明', age: 18, studentId: '006', sex: '男'};
 // 获取student的name和studentId属性
-let {name, studentId} = student;
+let { name, studentId } = student;
 console.log(name, studentId); // 小明 006
 
 2.数组的解构赋值
@@ -164,6 +164,7 @@ const lucy = { name: 'lucy' };
 let fn = ()=>{
     console.log(this.name);
 }
+// 使用call, apply, bind并不会改变箭头函数中的this指向。
 // 代码执行后打印 Hello World 而不是 lucy
 fn.call(lucy);
 
@@ -189,6 +190,8 @@ let fn2 = ()=>{
 }
 fn2(1, 2, 3);
 // Uncaught ReferenceError: arguments is not defined
+
+// 箭头函数没有原型对象 prototype 这个属性
 ```
 
 ```js
@@ -488,7 +491,7 @@ s.clear()
 // Set的应用
 1.数组去重
 let arr1 = [1, 1, 2, 2 , 3, 3]
-// new Set得到的是一个不包函数重复元素的对象，需要转为数组
+// new Set得到的是一个不包函重复元素的对象，需要转为数组
 let result1 = [...new Set(arr1)];
 console.log(result1)
 

@@ -65,6 +65,7 @@ React 本身是没有状态管理的概念的，这也是为什么会有 redux �
 // 第三个及以后的参数都为元素的子节点
 // 需要安装react npm i react
 let title = React.createElement('h1', {id: 'title'}, 'hello react');
+// 返回值是一个给定类型的ReactElement元素
 
 // createElement()的问题
 // 1.繁琐不简洁	2.不直观，不能一眼看出描述的结构
@@ -734,10 +735,10 @@ React 使用的是自定义(合成)事件, 而不是使用的原生DOM事件，�
      const eventBus = {
        // 存放被订阅的事件回调函数
        state: {
-         // key 对应时间名称， value为一个数组，用来存放对应的监听函数列表
+         // key 对应事件名称， value为一个数组，用来存放对应的监听函数列表
          message: [],
        },
-       // 订阅 传递订阅的时间类型和回调函数
+       // 订阅 传递订阅的事件类型和回调函数
        subscribe(eventName, callback) {
          // 添加到state中
          const list = this.state[eventName] || [];
@@ -804,7 +805,7 @@ React 使用的是自定义(合成)事件, 而不是使用的原生DOM事件，�
 
 ## 11.生命周期
 
-随着React 17的更新，React的生命周期也发生了些许改变，我们先来复习一下旧版本的生命    周期
+随着React 17的更新，React的生命周期也发生了些许改变，我们先来复习一下旧版本的生命周期
 
 ### 旧版本生命周期
 
@@ -860,7 +861,7 @@ render函数会插入jsx生成的dom结构，react会生成一份虚拟dom树，
 因为react父组件的重新渲染会导致其所有子组件的重新渲染，这个时候其实我们是不需要所有子组件都跟着重新渲染的，因此需要在子组件的该生命周期中做判断
 
 // componentWillUpdate (nextProps,nextState)
-shouldComponentUpdate返回true以后，组件即进入重新渲染的流程，进入componentWillUpdate,这里同样可以拿到nextProps和nextState。
+shouldComponentUpdate返回true以后，组件即进入重新渲染的流程，进入componentWillUp date,这里同样可以拿到nextProps和nextState。
 
 // render
 

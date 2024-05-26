@@ -507,7 +507,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(App)
 
 
 
-## 2.2 中间件 redux-thunx
+## 2.2 中间件 redux-thunk
 
 redux也引入了中间件（Middleware）的概念 ， 目的是在dispatch的action和最终达到的reducer之间，扩展一些自己的代码 。 比如日志记录、调用异步接口、添加代码调试功能等等 
 

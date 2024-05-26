@@ -15,7 +15,7 @@
 
 ## 2.1 useState
 
-useState用于在函数之间中定义和使用state
+useState用于在函数之中定义和使用state
 
 ```jsx
 // useState来自react，需要从react中导入，它是一个hook 
@@ -238,7 +238,7 @@ export default function Child(){
 
 `memo`和`PureComponent`作用类似，可以用作性能优化，`memo` 是高阶组件，函数组件和类组件都可以使用， 和`PureComponent`的区别是 `memo`只能针对`props`的情况确定是否渲染，而`PureComponent`是针对`props`和`state`。
 
-`memo` 接受两个参数，第一个参数原始组件本身，第二个参数，可以根据一次更新中`props`是否相同决定原始组件是否重新渲染。是一个返回布尔值，`true` 证明组件无须重新渲染，`false`证明组件需要重新渲染，这个和类组件中的`shouldComponentUpdate()`正好相反 。
+`memo` 接受两个参数，第一个参数原始组件本身，第二个参数，可以根据一次更新中`props`是否相同决定原始组件是否重新渲染。是一个函数，会返回布尔值，`true` 证明组件无须重新渲染，`false`证明组件需要重新渲染，这个和类组件中的`shouldComponentUpdate()`正好相反 。
 
 `memo`： 第二个参数 返回 true 组件不渲染 ， 返回 false 组件重新渲染。
 `shouldComponentUpdate`： 返回 true 组件渲染 ， 返回 false 组件不渲染。
@@ -333,7 +333,7 @@ const useWinSize = ()=>{
 	return size;
 }
 
-export default useWinSize();
+export default useWinSize;
 
 
 // 使用方法： 只需要在react组件中引入并调用即可
@@ -562,7 +562,7 @@ export default function App(){
  最常用的ref是两种用法： 
 
 -    用法一：引入DOM元素或组件（这个组件需为class组件，用ref获取函数组件会报错） 
--    用法二：保存一个数据，这个对象在整个生命周期中可以保存不变 
+-    用法二：保存一个数据，这个对象在整个生命周期中可以保持不变 
 
 用法1：
 
@@ -662,7 +662,7 @@ import React, {useRef, forwardRef, useImperativeHandle} from "react";
 /*
 * useImperativeHandle 可以传递3个参数
 * 参数1 传递进来的ref
-* 参数2 传递一个函数，这个函数返回一个对象。但父组件使用ref.current时获取到的值就算这个返回的对象
+* 参数2 传递一个函数，这个函数返回一个对象。但父组件使用ref.current时获取到的值就是这个返回的对象
 * 参数3 依赖项数组
 * */
 const AppChild = forwardRef((props, ref)=>{
