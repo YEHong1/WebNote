@@ -48,14 +48,72 @@ console.log(typeof null) // object
 console.log(typeof []) // object
 console.log(typeof {}) // object
 
-// 需要判断是不是数组用 instanceof， instanceof是基于原型来判断的
+// 需要判断是不是数组用 Es6的Array.isArray() 或者 instanceof， instanceof是基于原型来判断的
 // 这里就是判断 [] 是不是 Array构造函数的实例
 console.log([] instanceof Array) // true
+
+// 还有一些其它的可以判断类型的方法，例如 
+// constructor 不推荐，因为容易被篡改，修改原型后就不准确了
+// Object.prototype.toString.call([])   返回值 '[object Array]'
 ```
 
 
 
-## 4.深拷贝
+## 4.`instanceof`原理
+
+instanceof 运算符用于判断构造函数的 prototype 属性是否出现在对象的原型链中的任何位置
+
+```js
+function myInstanceof(left, right) {
+  // 获取对象的原型
+  let proto = Object.getPrototypeOf(left)
+  // 获取构造函数的 prototype 对象
+  const prototype = right.prototype;
+  // 判断构造函数的 prototype 对象是否在对象的原型链上
+  while (true) {
+    if (!proto) return false;
+    if (proto === prototype) return true;
+    // 如果没有找到，就继续从其原型上找，Object.getPrototypeOf方法用来获取指定对象的原型
+    proto = Object.getPrototypeOf(proto);
+  }
+}
+```
+
+
+
+## 5. == 与 ===
+
+```js
+// 使用 == 会将比较的两个值进行类型转换
+obj.a == null 相当于 obj.a === null || obj.a === undefined
+
+// 除了 == null 外，一律推荐使用 ===
+
+// isNaN 和 Number.isNaN 的区别
+isNaN会先将输入值转换为数值，Number.isNaN不会，后者相对来说更准确
+
+// Object.is() 与比较操作符 “===”、“==” 的区别
+Object.is()一般情况下和 === 的判断相同，区别在于它处理了一些特殊的情况，比如 -0 和 +0 不再相等，两个 NaN 是相等的。
+```
+
+
+
+## 6.`object.assign`和扩展运算符的区别
+
+```js
+const obj = {name: '阿卡丽', age: 18};
+const newObj = {...obj, id: 1};
+const assignObj = Object.assign({}, obj, {type: 'assign'});
+console.log(newObj) // { name: '阿卡丽', age: 18, id: 1 }
+console.log(assignObj) // { name: '阿卡丽', age: 18, type: 'assign' }
+
+// 扩展运算符和object.assign都是浅拷贝
+Object.assign()方法接收的第一个参数作为目标对象，后面的所有参数作为源对象。然后把所有的源对象合并到目标对象中
+```
+
+
+
+## 7.深拷贝
 
 ```js
 function deepClone(obj = {}){
@@ -80,35 +138,78 @@ function deepClone(obj = {}){
 
 
 
-## 5. == 与 ===
+## 8.`new`关键字做了什么
 
 ```js
-// 使用 == 会将比较的两个值进行类型转换
-// obj.a == null 相当于 obj.a === null || obj.a === undefined
+new 操作符用于创建一个实例对象，它执行了以下步骤：
+1.创建一个新的空对象
+2.设置原型，将对象的原型设置为函数的 prototype 对象。 
+// obj.__proto__ = constructor.prototype
+3.将函数的 this 指向这个新对象
+4.执行构造函数的代码（为这个新对象添加属性）
+5.判断函数的返回值类型，如果是值类型，返回创建的对象。如果是引用类型，就返回这个引用类型的对象。如果没有返回值，默认返回this
 
-// 除了 == null 外，一律推荐使用 ===
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+const p1 = new Person('akl', 18);
+console.log(p1) // { name: 'akl', age: 18 }
 ```
 
 
 
-## 6.`turely`变量和`falsely`变量
+## 9.箭头函数和普通函数的区别
 
 ```js
-// turely变量： !!a === true a就是一个turyly变量
-// falsely变量: !!b === false b就是一个falsely变量
+1.箭头函数的语法更简洁
+2.箭头函数没有自己的 this ，箭头函数的 this 取决于函数定义的作用域
+3.箭头函数的 this 无法被修改，call、apply、bind等方法都无法修改箭头函数中 this 的指向
+4.箭头函数不能作为构造函数来使用，因为箭头函数没有自己的this，做不到和新建的对象绑定起来
+5.箭头函数没有 prototype 属性
+6.箭头函数没有自己的 arguments 参数，在箭头函数中读取到的 arguments 参数是外层函数的
+7.箭头函数不能用作Generator函数，不能使用yeild关键字
 ```
 
 
 
-## 7.原型和原型链
+## 10. `for in` 和 `for of`的区别
+
+```js
+1.for…in 获取的是对象的键名(key)，for…of 遍历获取的是对象的键值(value)；
+2.for…in 会遍历对象的整个原型链，性能非常差不推荐使用，而 for…of 只遍历当前对象不会遍历原型链；
+```
 
 
 
-## 8.闭包
+## 11.原型和原型链
+
+```js
+// 原型
+在JavaScript中是使用构造函数来新建一个对象的，每一个构造函数内部都有一个 prototype 属性，这个属性包含了一些属性和方法，可以被该构造函数的所有实例共享。
+构造函数创建的实例存在一个 __proto__ 属性指向构造函数的 prototype 属性。 在 Es5 中 __proto__ 就是所谓的原型
+// 如果我们想获取某个对象的原型，可以使用 Object.getPrototypeOf()
+
+// 原型链
+当访问一个对象的属性时，如果这个对象内部不存在这个属性，那么它就会去它的原型对象里找这个属性，这个原型对象又会有自己的原型，于是就这样一直找下去，这就是原型链的概念。
+
+// 原型链的终点 (null)
+原型链上的所有原型都是对象，所有的对象最终都是由Object构造的，而Object.prototype的下一级是Object.prototype.__proto__。
+Object.prototype.__proto__ === null
+
+// 获取对象非原型链上的属性
+// hasOwnProperty() 这个方法用来判断属性是否是对象身的属性
+
+```
+
+
+
+## 12.闭包
 
 ### 什么是闭包
 
- 闭包是指有权访问另外一个函数作用域中的变量的函数。  可以理解为 闭包就是能够读取其他函数内部变量的函数 。
+闭包是指有权访问另外一个函数作用域中的变量的函数。  可以理解为 闭包就是能够读取其他函数内部变量的函数 。
 
 闭包主要有两种表现：函数作为参数被传递、函数作为返回值被返回
 
@@ -208,39 +309,41 @@ console.log(dataCtr.get('name'));
 
 
 
-## 9. this
+## 13. this
 
-`this`的指向不是在函数定义的时候决定的，而是在函数执行的时候决定的。
+`this`的指向主要有以下几种情况
 
 ```js
-// 需要注意一个地方
-let obj = {
-	name: '张三',
-	sayHello(){
-		console.log(this);
-	},
-	wait(){
-		// obj.wait()调用时，这里的this是 obj， 下面的this 是 window
-		console.log(this)
-		setTimeout(function (){
-			// 这里的 this 是window， 如果希望这里的this指向obj，可以改成箭头函数的写法
-			console.log(this)
-		}, 1000)
-	}
+1.普通函数的调用，this指向全局对象
+function sayHello() {
+  console.log(this)
 }
+sayHello() // window
 
-
-// 为什么上面function里的this指向window？
-// 上面的function就相当于是个callback函数，在满足一定条件后被执行
-function setTimeOut(callback, delay){
-	// 调用callback时，它前面没有和任何对象绑定在一起，根据js规则，默认绑定window
-	callback()
+2.作为对象的方法被调用，this指向调用者
+const name = 'akl';
+const cat = {
+  name: '有鱼',
+  eat: function () {
+    console.log(this.name);
+  }
 }
+cat.eat(); // 有鱼
+
+3.作为构造函数被调用，this指向实例化对象
+4.被apply和call调用，this指向参数中的对象
+5.作为匿名函数被调用，指向全局对象
+(function () {
+  console.log(this);
+})();
+6.定时器中的this指向window
+7.箭头函数中的this由上层作用域决定，和调用者无关
+8.作为DOM事件处理函数被调用，this指向绑定事件的元素
 ```
 
 
 
-## 10. call、apply和bind
+## 14. call、apply和bind
 
 - call、apply 和 bind 都可以改变函数内部 this 的指向
 
@@ -353,7 +456,7 @@ result('d', 'e', 'f');
 
 
 
-## 11.异步和单线程
+## 15.异步和单线程
 
 -   `JavaScript`是单线程语言，只能同时做一件事
 -   浏览器和 `nodejs`已支持`js`启动**进程**，如 `web worker`
@@ -384,7 +487,7 @@ result('d', 'e', 'f');
 
 
 
-## 12. event loop（事件循环 / 事件轮询）
+## 16. event loop（事件循环 / 事件轮询）
 
 我们知道JavaScript是单线程运行的，异步是基于回调函数实现。而 event loop 就是异步回调的实现原理。
 
@@ -426,44 +529,15 @@ console.log('world');
 
 
 
-## 13. async await 和 promise 的关系
+## 17. `async await` 和 promise 的关系
 
--   执行 async 函数，返回的是 Promise 对象
+-   执行 `async` 函数，返回的是 Promise 对象
 -   await 相当于 `Promise.then`
 -   `try catch` 可捕获异常，代替了 Promise 的 catch
 
 
 
-## 14. for of 遍历异步操作
-
-```js
-// 现在有一个需求：按顺序以及一定间隔打印数组中每个值得平方值
-let arr = [1, 2, 3];
-let mult = (num)=> {
-	return new Promise(resolve => {
-		setTimeout(()=>{
-			resolve(num * num)
-		}, 1000)
-	})
-}
-
-// arr.forEach(async (item)=>{
-// 	console.log(await mult(item));
-// })
-// forEach是同步的，执行结果是 1s后同时打印 1 4 9
-
-(async ()=>{
-	for(let item of arr){
-		console.log(await mult(item))
-	}
-})()
-// 每隔一秒打印数组对应项的平方
-
-```
-
-
-
-## 15.宏任务和微任务
+## 18.宏任务和微任务
 
 宏任务由浏览器决定，微任务由`ES6`规范决定
 
@@ -529,19 +603,19 @@ Promise 是ES规范，不是w3c标准。不会放到和 web api同一个队列�
 
 
 
-## 16.`DOM`是哪种基本的数据结构？
+## 19.`DOM`是哪种基本的数据结构？
 
 树 （DOM树）
 
 
 
-## 17.`DOM`的本质是什么？
+## 20.`DOM`的本质是什么？
 
 DOM可以理解为浏览器把拿到的html代码，结构化一个浏览器能识别并且js可操作的一个模型 
 
 
 
-## 18. DOM节点的 `attr` 和`property`有何区别？ 
+## 21. DOM节点的 `attr` 和`property`有何区别？ 
 
 `property`：修改对象属性，不会体现到 `html` 结构中
 
@@ -551,7 +625,7 @@ DOM可以理解为浏览器把拿到的html代码，结构化一个浏览器能�
 
 
 
-## 19.`DOM`性能优化
+## 22.`DOM`性能优化
 
 -   DOM操作比较消耗性能，避免频繁的DOM操作
 -   对DOM查询做缓存,避免重复查询 `let pNode = document.querySelector('#title')`
@@ -641,10 +715,10 @@ e.cancelBubble = true;
 
 `xhr.status`
 
--   2xx：表示成功处理请求，例如 200
--   3xx：需要重定向，浏览器直接跳转。301（永久重定向），302（临时重定向），304（请求的资源和上次请求获得的资源一样，没有发生改变，直接使用缓存）
--   4xx：客户端请求错误。404，403（没有权限）
--   5xx：服务端错误
+-   `2xx`：表示成功处理请求，例如 200
+-   `3xx`：需要重定向，浏览器直接跳转。301（永久重定向），302（临时重定向），304（请求的资源和上次请求获得的资源一样，没有发生改变，直接使用缓存）
+-   `4xx`：客户端请求错误。404，403（没有权限）
+-   `5xx`：服务端错误
 
 ```js
 // get
@@ -895,4 +969,33 @@ function throttle(fn, delay) {
 
 -   添加校验 `token`， `token`在客户端是存放在cookie中，当用户去访问这个恶意网站的时候，是没办法拿到我们银行转账网站的cookie的。
 -   网站操作添加验证码校验
+
+
+
+## 31.数组扁平化
+
+```js
+// 数组扁平化：将多维数组转为一维数组
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
