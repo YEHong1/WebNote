@@ -974,8 +974,24 @@ function throttle(fn, delay) {
 
 ## 31.数组扁平化
 
+将多维数组转为一维数组
+
 ```js
-// 数组扁平化：将多维数组转为一维数组
+1.递归
+function flattenArray(arr) {
+  return [].concat(...arr.map(item => Array.isArray(item) ? flattenArray(item) : item));
+}
+
+const nestedArray = [1, [2, 3, [4, 5]], 6];
+const flattenedArray = flattenArray(nestedArray);
+console.log(flattenedArray); // [1, 2, 3, 4, 5, 6]
+
+
+
+2.使用 Array.prototype.flat 方法（ES6）：flat 方法用于将嵌套的数组扁平化，可以指定扁平化的深度，默认为 1。
+const nestedArray = [1, [2, 3, [4, 5]], 6];
+const flattenedArray = nestedArray.flat(Infinity);
+console.log(flattenedArray); // [1, 2, 3, 4, 5, 6]
 
 ```
 
