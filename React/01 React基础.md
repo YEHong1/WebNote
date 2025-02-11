@@ -454,19 +454,19 @@ class Hello extends React.Component {
     // 传入函数不会被合并, 下面的结果为count + 3
     this.setState((preState, props)=>{
         return {
-            count: prestate.count + 1
+            count: preState.count + 1
         }
     })
     
     this.setState((preState, props)=>{
         return {
-            count: prestate.count + 1
+            count: preState.count + 1
         }
     })
     
     this.setState((preState, props)=>{
         return {
-            count: prestate.count + 1
+            count: preState.count + 1
         }
     })
     ```

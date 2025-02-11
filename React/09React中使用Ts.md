@@ -1,5 +1,3 @@
-## 
-
 ## 1.创建基于TypeScript的react项目
 
 ```js
