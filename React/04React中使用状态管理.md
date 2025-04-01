@@ -123,7 +123,7 @@ store.subscribe(()=>{
 
 // 3.实例
 const action = { type: 'INCREMENT', data: 2 }
-
+ 
 // 4.Action Creator(创建 Action 的工厂函数)
 const increment = (number) => ({type: 'INCREMENT', data: number})
 ```

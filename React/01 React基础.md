@@ -77,7 +77,13 @@ const vDom = <h1 id='title'>Hello World</h1>
 // 参数1 要渲染的react元素
 // 参数2 挂载点
 // 需要安装 react-dom  npm i react-dom
+
+// 17版本
 ReactDom.render(title, document.getElementById('root'));
+// 18版本
+import { createRoot } from 'react-dom/client'
+const root = createRoot(document.getElementById('root'));
+root.render(title);
 
 // jsx语法在打包阶段已经被编译成JavaScript纯对象，这个过程由Babel的jsx编译器实现
 jsx --> babel 编译 --> JavaScript对象 --> ReactDom.render() --> 将JavaScript对象渲染成DOM元素并插入到页面
@@ -176,6 +182,10 @@ ReactDOM.render(
 
 10.JSX其实是  **React.createElement()** 的语法糖，所以在React中凡是使用JSX语法的文件都需要在文件开头引入React
 
+```js
+// 从 React 17 开始，引入了新的 JSX 转换，它不再依赖于在文件中显式引入 React。新的 JSX 转换会将 JSX 编译成不同的函数调用，而不是 React.createElement。具体来说，它会使用 jsx 或 jsxs 函数（这些函数由 React 提供）
+```
+
 11.false、true、undefined、null都是合法的子元素，但它们都并不会被渲染。利用这个特性，可以通过三元运算符来控制是否显示对应组件
 
 ```jsx
@@ -261,7 +271,31 @@ class Com2 extends Component {
 }
 ```
 
+```jsx
+// 类似插槽的方式，通过 props.children 属性
+const ComponentA = ()=> (<span>ComponentA</span>)
+const ComponentB = (props)=> (
+  <>
+    <p>ComponentB</p>
+    {props.children}
+  </>
+)
 
+const Home = ()=>{
+
+  return (
+    <div>
+      <p>Home Page</p>
+      {/* 这种的好处是，假如ComponentA组件需要接受Home组件的数据时，可以直接跨越ComponentB组件 */}
+      <ComponentB>
+        <ComponentA />
+      </ComponentB>
+    </div>
+  )
+}
+
+export default Home;
+```
 
 
 
