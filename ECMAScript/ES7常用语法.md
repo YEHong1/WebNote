@@ -3,11 +3,16 @@
  Includes 方法用来检测数组中是否包含某个元素，返回布尔类型值 
 
 ```js
-// es5判断数组张是否存在某个元素用 indexOf('') !== -1
+// es5判断数组是否存在某个元素用 indexOf('') !== -1
 
 // es7 可以用includes
 let singerList = ['周杰伦', '陈奕迅', '林俊杰']
 console.log(singerList.includes('周杰伦')) // true
+
+// 字符串也有includes方法,用来查询是否包含指定的字符串
+const str = 'hello world & 123';
+console.log(str.includes('hello')); // true
+
 ```
 
 

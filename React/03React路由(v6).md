@@ -326,7 +326,7 @@ const Home = ()=>{
 	// 主要用到 params的 get 和 getAll 方法
 	const [params] = useSearchParams();
 	console.log(params.get('qq'))
-    // 获取第一个参数名称为name的参数值
+    // 获取第一个参数名称为name的参数值 
 	console.log(params.get('name'))  // abc
     // 获取是由参数名称为name的参数值，返回一个字符串数组
 	console.log(params.getAll('name')) // ['abc', 'zxc']
@@ -382,9 +382,7 @@ const App = ()=>{
 		}
 	}, [location.pathname])
 
-	return (
-		useRoutes(router)
-	)
+	return useRoutes(router)
 }
 
 export default App;

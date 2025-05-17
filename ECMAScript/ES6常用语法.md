@@ -78,10 +78,17 @@ const A = 'A';
 
 ```js
 1.对象的解构赋值
-let student = { name: '小明', age: 18, studentId: '006', sex: '男'};
-// 获取student的name和studentId属性
-let { name, studentId } = student;
-console.log(name, studentId); // 小明 006
+const student = {
+  name: {
+    first: "John",
+    last: "Doe",
+  },
+  age: 18,
+};
+
+const { name: { first, last }, age } = student;
+console.log(first, last, age);
+
 
 2.数组的解构赋值
 // 数组的结构赋值需要按顺序
@@ -493,6 +500,8 @@ s.clear()
 let arr1 = [1, 1, 2, 2 , 3, 3]
 // new Set得到的是一个不包函重复元素的对象，需要转为数组
 let result1 = [...new Set(arr1)];
+// 也可以通过Array.from()来转换
+const result2 = Array.from(arr1);
 console.log(result1)
 
 2.获取两个数组的交集w
@@ -516,6 +525,11 @@ ES6 提供了 Map 数据结构。它类似于对象，也是键值对的集合�
 
 // 声明Map
 let m = new Map();
+// 创建一个带有初始键值对的 Map
+const initialMap = new Map([
+    ['key1', 'value1'],
+    ['key2', 'value2']
+]);
 // 添加元素，用set
 m.set('name', '张三');
 let objKey = {
@@ -534,6 +548,13 @@ console.log(m) // Map(1) { 'name' => '张三' }
 
 // get 获取属性
 console.log(m.get('name')) // 张三
+
+// 使用场景，通过名称来调用函数
+const controlMap = new Map([
+    ['notice', () => {}],
+]);
+
+controlMap.get('notice')();
 
 ```
 
